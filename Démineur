@@ -1,0 +1,150 @@
+#include<stdlib.h>
+#include "myconio.h"
+int tab[10][10];
+char grille[10][10];
+ int cpt = 100;
+void initTab()
+{
+    int i, j;
+    for(i=0; i<10; i++)
+    {
+        for(j=0; j<10; j++)
+        {
+            tab[i][j] = 0;
+        }
+    }
+}
+void initGrille()
+{
+    int i, j;
+    for(i=0; i<10; i++)
+    {
+        for(j=0; j<10; j++)
+        {
+            grille[i][j] = '*';
+        }
+    }
+}
+void afficheTab()
+{
+    int i, j;
+    for(i=0; i<10; i++)
+    {
+        for(j=0; j<10; j++)
+        {
+            printf("%d ",tab[i][j]);
+        }
+        printf("\n");
+    }
+}
+void grilles()
+{
+    int i, j;
+    for(i=0; i<10; i++)
+    {
+        for(j=0; j<10; j++)
+        {
+            printf("%c",grille[i][j]);
+        }
+        printf("\n");
+    }
+}
+void placeMines()
+{
+    int nb,i, j;
+    srand(time(NULL));
+    for(nb=0; nb<10; nb++)
+    {
+        i = rand()%10;
+        j = rand()%10;
+        if(tab[i][j]==9) nb--;
+        else tab[i][j] = 9;
+    }
+}
+
+void placeValeurs()
+{
+    int i, j, val;
+    for(i=0; i<10; i++)
+    {
+
+        for(j=0; j<10; j++)
+        {
+            val = 0;
+            if(tab[i][j]!=9){
+                if(tab[i-1][j] == 9) val++;
+                if(tab[i-1][j-1] == 9) val++;
+                if(tab[i-1][j+1] == 9) val++;
+                if(tab[i][j-1] == 9) val++;
+                if(tab[i][j+1] == 9) val++;
+                if(tab[i+1][j+1] == 9) val++;
+                if(tab[i+1][j] == 9) val++;
+                if(tab[i+1][j-1] == 9) val++;
+                tab[i][j] = val;
+            }
+        }
+    }
+}
+void perdu()
+{
+    gotoxy(10,15);
+    printf("\n----------PERDU------------\n\n");
+    getch();
+    exit(0);
+}
+void fouiller(int x, int y)
+{
+
+    if(tab[y][x]==9) perdu();
+    else{
+        if(grille[y][x] != (char)(tab[y][x]+48))
+            {
+                grille[y][x] = (char)(tab[y][x]+48);
+                cpt--;
+                if(cpt == 10) gagner();
+            }
+
+    }
+}
+void gagner()
+{
+            gotoxy(10,15);
+            printf("Bravo Vous avez gagné...");
+            getch();
+            exit(0);
+    }
+
+main()
+{
+	int x = 0,y = 0, i, j;
+    char touche = 0;
+    initTab();
+    placeMines();
+    placeValeurs();
+    initGrille();
+    grilles();
+   gotoxy(x,y);
+   while(touche!=27)
+    {
+
+        touche = getch();
+        if((touche == 122 || touche==90) && y>0)
+        {
+            y--;
+        }else if((touche==115 || touche==83) && y<9){
+            y++;
+        }else if((touche==68 || touche==100) && x<9){
+            x++;
+        }else if((touche==81 || touche==113) && x>0){
+            x--;
+        }
+        else if(touche==102) {
+                fouiller(x,y);
+                clrscr();
+                gotoxy(0,0);
+                grilles();
+        }
+        gotoxy(x,y);
+        }
+getch();
+}
