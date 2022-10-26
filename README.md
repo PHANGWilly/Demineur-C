@@ -1,3 +1,3 @@
 # C
 
-#include "myconio.h" --> est une table crée par mon professeur pour introduire les touches du clavier 
+Programmation d'un démineur en C
